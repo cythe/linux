@@ -2729,13 +2729,11 @@ t_Error FM_PORT_Free(t_Handle h_FmPort)
     if (p_FmPort->imEn)
         FmPortImFree(p_FmPort);
 
-    FmPortDriverParamFree(p_FmPort);
-
     memset(&fmParams, 0, sizeof(fmParams));
     fmParams.hardwarePortId = p_FmPort->hardwarePortId;
     fmParams.portType = (e_FmPortType)p_FmPort->portType;
-    fmParams.deqPipelineDepth =
-            p_FmPort->p_FmPortDriverParam->dfltCfg.tx_fifo_deq_pipeline_depth;
+    if (p_FmPort->p_FmPortDriverParam)
+        fmParams.deqPipelineDepth = p_FmPort->p_FmPortDriverParam->dfltCfg.tx_fifo_deq_pipeline_depth;
 
     FmFreePortParams(p_FmPort->h_Fm, &fmParams);
 
@@ -2745,6 +2743,8 @@ t_Error FM_PORT_Free(t_Handle h_FmPort)
 
     if (p_FmPort->p_ParamsPage)
         FM_MURAM_FreeMem(p_FmPort->h_FmMuram, p_FmPort->p_ParamsPage);
+
+    FmPortDriverParamFree(p_FmPort);
 
     if (p_FmPort->h_Spinlock)
         XX_FreeSpinlock(p_FmPort->h_Spinlock);
