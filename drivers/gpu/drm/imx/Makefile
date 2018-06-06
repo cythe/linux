@@ -17,6 +17,7 @@ obj-$(CONFIG_DRM_IMX_DW_MIPI_DSI) += dw_mipi_dsi-imx.o
 obj-$(CONFIG_DRM_IMX_HDMI) += dw_hdmi-imx.o
 obj-$(CONFIG_IMX8MP_HDMI_PAVI) += imx8mp-hdmi-pavi.o
 obj-$(CONFIG_DRM_IMX_SEC_DSIM) += sec_mipi_dsim-imx.o
+obj-$(CONFIG_DRM_IMX8MM_LCDIF) += lcdif/
 obj-$(CONFIG_DRM_IMX_DCSS) += dcss/
 obj-$(CONFIG_DRM_IMX) += ipuv3/
 obj-$(CONFIG_DRM_IMX_CDNS_MHDP) += mhdp/
