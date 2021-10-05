@@ -160,6 +160,9 @@
 #define FSL_DCU_ARGB4444		12
 #define FSL_DCU_YUV422			14
 
+#define SCFG_PIXCLKCR                  0x28
+#define SCFG_PIXCLKCR_PXCEN            BIT(31)
+
 #define SCFG_PIXCLKCR			0x28
 #define SCFG_PIXCLKCR_PXCEN		BIT(31)
 
