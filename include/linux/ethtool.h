@@ -15,6 +15,7 @@
 
 #include <linux/bitmap.h>
 #include <linux/compat.h>
+#include <linux/netlink.h>
 #include <uapi/linux/ethtool.h>
 
 struct compat_ethtool_rx_flow_spec {
@@ -453,9 +454,13 @@ struct ethtool_ops {
 	int	(*get_coalesce)(struct net_device *, struct ethtool_coalesce *);
 	int	(*set_coalesce)(struct net_device *, struct ethtool_coalesce *);
 	void	(*get_ringparam)(struct net_device *,
-				 struct ethtool_ringparam *);
+				 struct ethtool_ringparam *,
+				 struct kernel_ethtool_ringparam *,
+				 struct netlink_ext_ack *);
 	int	(*set_ringparam)(struct net_device *,
-				 struct ethtool_ringparam *);
+				 struct ethtool_ringparam *,
+				 struct kernel_ethtool_ringparam *,
+				 struct netlink_ext_ack *);
 	void	(*get_pause_stats)(struct net_device *dev,
 				   struct ethtool_pause_stats *pause_stats);
 	void	(*get_pauseparam)(struct net_device *,
