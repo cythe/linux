@@ -133,7 +133,7 @@ typedef struct {
 	u32 hw_id; //hw id to indicate project
 	u32 is_valid; //indicate this core is hantro's core or not
 	u32 is_reserved; //indicate this core is occupied by user or not
-	int pid; //indicate which process is occupying the core
+	struct file *filp;  //indicate which instance is occupying the core
 	u32 irq_received; //indicate this core receives irq
 	u32 irq_status;
 	int irq;
@@ -314,9 +314,8 @@ static int CheckCoreOccupation(hx280enc_t *dev, struct file *filp)
 	spin_lock_irqsave(&owner_lock, flags);
 	if (!dev->is_reserved) {
 		dev->is_reserved = 1;
-		dev->pid = current->pid;
+		dev->filp = filp;
 		ret = 1;
-		PDEBUG("CheckCoreOccupation pid=%d\n", dev->pid);
 	}
 	spin_unlock_irqrestore(&owner_lock, flags);
 
@@ -329,7 +328,7 @@ static int GetWorkableCore(hx280enc_t *dev, struct file *filp)
 
 	PDEBUG("GetWorkableCore\n");
 
-	if (dev->is_valid && CheckCoreOccupation(dev))
+	if (dev->is_valid && CheckCoreOccupation(dev, filp))
 		ret = 1;
 
 	return ret;
@@ -338,7 +337,7 @@ static int GetWorkableCore(hx280enc_t *dev, struct file *filp)
 static long ReserveEncoder(hx280enc_t *dev, struct file *filp)
 {
 	/* lock a core that has specified core id*/
-	if (wait_event_interruptible(enc_hw_queue, GetWorkableCore(dev) != 0))
+	if (wait_event_interruptible(enc_hw_queue, GetWorkableCore(dev, filp) != 0))
 		return -ERESTARTSYS;
 
 	return 0;
@@ -351,9 +350,8 @@ static void ReleaseEncoder(hx280enc_t *dev, struct file *filp)
 	PDEBUG("ReleaseEncoder\n");
 
 	spin_lock_irqsave(&owner_lock, flags);
-	PDEBUG("relase reseve by pid=%d with current->pid=%d\n", dev->pid, current->pid);
-	if (dev->is_reserved && dev->pid == current->pid) {
-		dev->pid = -1;
+	if (dev->is_reserved && dev->filp == filp) {
+		dev->filp = NULL;
 		dev->is_reserved = 0;
 	}
 
@@ -472,12 +470,12 @@ static long hx280enc_ioctl(struct file *filp, unsigned int cmd, unsigned long ar
 		int ret;
 
 		PDEBUG("Reserve ENC Cores\n");
-		ret = ReserveEncoder(&hx280enc_data);
+		ret = ReserveEncoder(&hx280enc_data, filp);
 		return ret;
 	}
 	case _IOC_NR(HX280ENC_IOCH_ENC_RELEASE):
 		PDEBUG("Release ENC Core\n");
-		ReleaseEncoder(&hx280enc_data);
+		ReleaseEncoder(&hx280enc_data, filp);
 		break;
 	case _IOC_NR(HX280ENC_IOCG_CORE_WAIT): {
 		u32 *regs = (u32 *)arg;
@@ -571,8 +569,8 @@ static int hx280enc_release(struct inode *inode, struct file *filp)
 
 	PDEBUG("dev closed\n");
 	spin_lock_irqsave(&owner_lock, flags);
-	if (dev->is_reserved == 1 && dev->pid == current->pid) {
-		dev->pid = -1;
+	if (dev->is_reserved == 1 && dev->filp == filp) {
+		dev->filp = NULL;
 		dev->is_reserved = 0;
 		dev->irq_received = 0;
 		dev->irq_status = 0;
