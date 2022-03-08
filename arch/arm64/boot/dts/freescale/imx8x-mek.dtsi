@@ -88,7 +88,7 @@
 			no-map;
 		};
 
-		decoder_rpc: decoder-rpc@0x92000000 {
+		decoder_rpc: decoder-rpc@92000000 {
 			reg = <0 0x92000000 0 0x100000>;
 			no-map;
 		};
