@@ -506,7 +506,6 @@ int vsi_v4l2_bufferdone(struct vsi_v4l2_msg *pmsg)
 				v4l2_klog(LOGLVL_BRIEF, "got error srcbuf %d\n", inbufidx);
 				vb2_buffer_done(vb, VB2_BUF_STATE_ERROR);
 			} else {
-				vbuf = to_vb2_v4l2_buffer(vb);
 				vbuf->sequence = ctx->cap_sequence++;
 				vb2_buffer_done(vb, VB2_BUF_STATE_DONE);
 			}
@@ -535,6 +534,7 @@ int vsi_v4l2_bufferdone(struct vsi_v4l2_msg *pmsg)
 			ctx->frameidx++;
 		vq = &ctx->output_que;
 		vb = vq->bufs[outbufidx];
+		vbuf = to_vb2_v4l2_buffer(vb);
 		atomic_inc(&ctx->dstframen);
 		if (vb->state == VB2_BUF_STATE_ACTIVE) {
 			vb->planes[0].bytesused = bytesused[0];
@@ -544,6 +544,7 @@ int vsi_v4l2_bufferdone(struct vsi_v4l2_msg *pmsg)
 				v4l2_klog(LOGLVL_FLOW,  "enc output framed %d size = %d,flag=%lx, timestamp=%lld",
 						outbufidx, vb->planes[0].bytesused, ctx->vbufflag[outbufidx], vb->timestamp);
 				if (vb->planes[0].bytesused == 0 || (pmsg->param_type & LAST_BUFFER_FLAG)) {
+					vbuf->flags |= V4L2_BUF_FLAG_LAST;
 					ctx->vbufflag[outbufidx] |= LAST_BUFFER_FLAG;
 					v4l2_klog(LOGLVL_BRIEF, "%lx encoder got eos buffer", ctx->ctxid);
 				}
@@ -558,6 +559,7 @@ int vsi_v4l2_bufferdone(struct vsi_v4l2_msg *pmsg)
 				ctx->rfc_luma_offset[outbufidx] = pmsg->params.dec_params.io_buffer.rfc_luma_offset;
 				ctx->rfc_chroma_offset[outbufidx] = pmsg->params.dec_params.io_buffer.rfc_chroma_offset;
 				if (bytesused[0] == 0) {
+					vbuf->flags |= V4L2_BUF_FLAG_LAST;
 					v4l2_klog(LOGLVL_BRIEF, "%lx decoder got zero buffer in state %d", ctx->ctxid, ctx->status);
 					if ((ctx->status == DEC_STATUS_DRAINING) || test_bit(CTX_FLAG_PRE_DRAINING_BIT, &ctx->flag)) {
 						ctx->status = DEC_STATUS_ENDSTREAM;
