@@ -392,7 +392,8 @@ static int memac_init_phy(struct net_device *net_dev,
 	}
 
 	/* Unless the PHY is capable of rate adaptation */
-	if (mac_dev->phy_if != PHY_INTERFACE_MODE_10GBASER ||
+	if ((mac_dev->phy_if != PHY_INTERFACE_MODE_10GBASER &&
+		mac_dev->phy_if != PHY_INTERFACE_MODE_USXGMII) ||
 	    ((phy_dev->drv->phy_id & GENMASK(31, 10)) != PHY_VEND_AQUANTIA)) {
 		/* Remove any features not supported by the controller */
 		ethtool_convert_legacy_u32_to_link_mode(mask,
