@@ -1217,6 +1217,25 @@ static void fm_remove(struct platform_device *of_dev)
     dev_set_drvdata(dev, NULL);
 }
 
+#if defined(CONFIG_KEXEC)
+static void fm_shutdown(struct platform_device *of_dev)
+{
+	t_LnxWrpFmDev   *p_LnxWrpFmDev;
+	struct device   *dev;
+
+	dev = &of_dev->dev;
+	p_LnxWrpFmDev = dev_get_drvdata(dev);
+	if (!p_LnxWrpFmDev->active)
+		return;
+
+	FreeFmDev(p_LnxWrpFmDev);
+
+	DestroyFmDev(p_LnxWrpFmDev);
+
+	dev_set_drvdata(dev, NULL);
+}
+#endif
+
 static const struct of_device_id fm_match[] = {
     {
         .compatible    = "fsl,fman"
@@ -1234,6 +1253,9 @@ static struct platform_driver fm_driver = {
         .owner          = THIS_MODULE,
     },
     .probe          = fm_probe,
+#if defined(CONFIG_KEXEC)
+    .shutdown       = fm_shutdown,
+#endif
     .remove         = fm_remove
 };
 
