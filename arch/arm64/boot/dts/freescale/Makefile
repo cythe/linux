@@ -533,7 +533,7 @@ imx8qxp-mek-ov5640-parallel-rpmsg-dtbs := imx8qxp-mek-rpmsg.dtb imx8qxp-mek-ov56
 dtb-${CONFIG_ARCH_MXC} += imx8qxp-mek-ov5640-parallel-rpmsg.dtb
 imx8qxp-mek-ov5640-dual-rpmsg-dtbs := imx8qxp-mek-rpmsg.dtb imx8qxp-mek-ov5640-csi.dtbo imx8qxp-mek-ov5640-parallel.dtbo
 dtb-${CONFIG_ARCH_MXC} += imx8qxp-mek-ov5640-dual-rpmsg.dtb
-
+dtb-$(CONFIG_ARCH_MXC) += imx93-9x9-qsb.dtb
 dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxca.dtb
 dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxla.dtb
 dtb-$(CONFIG_ARCH_MXC) += imx93-var-som-symphony.dtb
