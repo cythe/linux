@@ -163,10 +163,10 @@ void arch_timer_reg_write(int access, enum arch_timer_reg reg, u64 val,
 }
 
 static __always_inline
-u32 arch_timer_reg_read(int access, enum arch_timer_reg reg,
+u64 arch_timer_reg_read(int access, enum arch_timer_reg reg,
 			struct clock_event_device *clk)
 {
-	u32 val;
+	u64 val;
 
 	if (access == ARCH_TIMER_MEM_PHYS_ACCESS) {
 		struct arch_timer *timer = to_arch_timer(clk);
@@ -449,6 +449,8 @@ void erratum_38627_set_next_event(const int access, unsigned long evt,
 {
 	unsigned long ctrl;
 	u64 cnt;
+	u64 cval;
+	int tval;
 
 	ctrl = arch_timer_reg_read(access, ARCH_TIMER_REG_CTRL, clk);
 	ctrl |= ARCH_TIMER_CTRL_ENABLE;
@@ -459,13 +461,16 @@ void erratum_38627_set_next_event(const int access, unsigned long evt,
 	else
 		cnt = __arch_counter_get_cntvct();
 
+	cval = arch_timer_reg_read(access, ARCH_TIMER_REG_CVAL, clk);
+
+	tval = cnt - cval;
 	/* Timer already expired, wait for (2 - expired time)us */
-	if ((cnt > -200) && (cnt < 0))
-		udelay(2 + cnt/100);
+	if ((tval > -200) && (tval < 0))
+		udelay(2 + tval/100);
 
 	/* Timer is about to expire, wait for 2us + time to expire */
-	if (cnt >= 0 && cnt < 200)
-		udelay(3 + cnt/100);
+	if (tval >= 0 && tval < 200)
+		udelay(3 + tval/100);
 
 	arch_timer_reg_write(access, ARCH_TIMER_REG_CVAL, evt + cnt, clk);
 	arch_timer_reg_write(access, ARCH_TIMER_REG_CTRL, ctrl, clk);
