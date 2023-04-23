@@ -590,6 +590,7 @@ static struct vsi_video_fmt vsi_coded_fmt[] = {
 		.flag = (V4L2_FMT_FLAG_DYN_RESOLUTION | V4L2_FMT_FLAG_COMPRESSED),
 		.num_planes = 1,
 		.comp_planes = 1,
+		.mask = BIT(0),
 	},
 	{
 		.fourcc = V4L2_PIX_FMT_H264,
@@ -598,6 +599,7 @@ static struct vsi_video_fmt vsi_coded_fmt[] = {
 		.flag = (V4L2_FMT_FLAG_DYN_RESOLUTION | V4L2_FMT_FLAG_COMPRESSED),
 		.num_planes = 1,
 		.comp_planes = 1,
+		.mask = BIT(1),
 	},
 	{
 		.fourcc = V4L2_PIX_FMT_JPEG,
@@ -606,6 +608,7 @@ static struct vsi_video_fmt vsi_coded_fmt[] = {
 		.flag = (V4L2_FMT_FLAG_DYN_RESOLUTION | V4L2_FMT_FLAG_COMPRESSED),
 		.num_planes = 1,
 		.comp_planes = 1,
+		.mask = BIT(2),
 	},
 	{
 		.fourcc = V4L2_PIX_FMT_VP8,
@@ -614,6 +617,7 @@ static struct vsi_video_fmt vsi_coded_fmt[] = {
 		.flag = (V4L2_FMT_FLAG_DYN_RESOLUTION | V4L2_FMT_FLAG_COMPRESSED),
 		.num_planes = 1,
 		.comp_planes = 1,
+		.mask = BIT(3),
 	},
 	{
 		.fourcc = V4L2_PIX_FMT_VP9,
@@ -622,6 +626,7 @@ static struct vsi_video_fmt vsi_coded_fmt[] = {
 		.flag = (V4L2_FMT_FLAG_DYN_RESOLUTION | V4L2_FMT_FLAG_COMPRESSED),
 		.num_planes = 1,
 		.comp_planes = 1,
+		.mask = BIT(4),
 	},
 	{
 		.name = "av1",
@@ -631,6 +636,7 @@ static struct vsi_video_fmt vsi_coded_fmt[] = {
 		.flag = (V4L2_FMT_FLAG_DYN_RESOLUTION | V4L2_FMT_FLAG_COMPRESSED),
 		.num_planes = 1,
 		.comp_planes = 1,
+		.mask = BIT(5),
 	},
 	{
 		.fourcc = V4L2_PIX_FMT_MPEG2,
@@ -639,6 +645,7 @@ static struct vsi_video_fmt vsi_coded_fmt[] = {
 		.flag = (V4L2_FMT_FLAG_DYN_RESOLUTION | V4L2_FMT_FLAG_COMPRESSED),
 		.num_planes = 1,
 		.comp_planes = 1,
+		.mask = BIT(6),
 	},
 	{
 		.fourcc = V4L2_PIX_FMT_MPEG4,
@@ -647,6 +654,7 @@ static struct vsi_video_fmt vsi_coded_fmt[] = {
 		.flag = (V4L2_FMT_FLAG_DYN_RESOLUTION | V4L2_FMT_FLAG_COMPRESSED),
 		.num_planes = 1,
 		.comp_planes = 1,
+		.mask = BIT(7),
 	},
 	{
 		.fourcc = V4L2_PIX_FMT_H263,
@@ -655,6 +663,7 @@ static struct vsi_video_fmt vsi_coded_fmt[] = {
 		.flag = (V4L2_FMT_FLAG_DYN_RESOLUTION | V4L2_FMT_FLAG_COMPRESSED),
 		.num_planes = 1,
 		.comp_planes = 1,
+		.mask = BIT(8),
 	},
 	{
 		.fourcc = V4L2_PIX_FMT_VC1_ANNEX_G,
@@ -663,6 +672,7 @@ static struct vsi_video_fmt vsi_coded_fmt[] = {
 		.flag = (V4L2_FMT_FLAG_DYN_RESOLUTION | V4L2_FMT_FLAG_COMPRESSED),
 		.num_planes = 1,
 		.comp_planes = 1,
+		.mask = BIT(9),
 	},
 	{
 		.fourcc = V4L2_PIX_FMT_VC1_ANNEX_L,
@@ -671,6 +681,7 @@ static struct vsi_video_fmt vsi_coded_fmt[] = {
 		.flag = (V4L2_FMT_FLAG_DYN_RESOLUTION | V4L2_FMT_FLAG_COMPRESSED),
 		.num_planes = 1,
 		.comp_planes = 1,
+		.mask = BIT(10),
 	},
 	{
 		.name = "rv30",
@@ -680,6 +691,7 @@ static struct vsi_video_fmt vsi_coded_fmt[] = {
 		.flag = (V4L2_FMT_FLAG_DYN_RESOLUTION | V4L2_FMT_FLAG_COMPRESSED),
 		.num_planes = 1,
 		.comp_planes = 1,
+		.mask = BIT(11),
 	},
 	{
 		.name = "rv40",
@@ -689,6 +701,7 @@ static struct vsi_video_fmt vsi_coded_fmt[] = {
 		.flag = (V4L2_FMT_FLAG_DYN_RESOLUTION | V4L2_FMT_FLAG_COMPRESSED),
 		.num_planes = 1,
 		.comp_planes = 1,
+		.mask = BIT(11),
 	},
 	{
 		.name = "avs",
@@ -698,6 +711,7 @@ static struct vsi_video_fmt vsi_coded_fmt[] = {
 		.flag = (V4L2_FMT_FLAG_DYN_RESOLUTION | V4L2_FMT_FLAG_COMPRESSED),
 		.num_planes = 1,
 		.comp_planes = 1,
+		.mask = BIT(12),
 	},
 	{
 		.fourcc = V4L2_PIX_FMT_XVID,
@@ -706,6 +720,7 @@ static struct vsi_video_fmt vsi_coded_fmt[] = {
 		.flag = (V4L2_FMT_FLAG_DYN_RESOLUTION | V4L2_FMT_FLAG_COMPRESSED),
 		.num_planes = 1,
 		.comp_planes = 1,
+		.mask = BIT(13),
 	},
 };
 
@@ -2079,9 +2094,9 @@ void vsiv4l2_set_hwinfo(struct vsi_v4l2_dev_info *hwinfo)
 	v4l2_klog(LOGLVL_BRIEF, "%s::%d:%d:%lx:%lx", __func__,
 		hwinfo->enc_isH1, hwinfo->max_dec_resolution, hwinfo->encformat, hwinfo->decformat);
 	for (i = 0; i < ARRAY_SIZE(vsi_coded_fmt); i++) {
-		if (((1 << i) & hwinfo->encformat) == 0)
+		if ((vsi_coded_fmt[i].mask & hwinfo->encformat) == 0)
 			vsi_coded_fmt[i].enc_fmt = V4L2_DAEMON_CODEC_UNKNOW_TYPE;
-		if (((1 << i) & hwinfo->decformat) == 0) {
+		if ((vsi_coded_fmt[i].mask & hwinfo->decformat) == 0) {
 			//disable all jpg only output fmt
 			if (vsi_coded_fmt[i].dec_fmt == V4L2_DAEMON_CODEC_DEC_JPEG) {
 				for (j = 0; j < ARRAY_SIZE(vsi_raw_fmt); j++) {
