@@ -316,6 +316,7 @@ static void vsi_enum_decfsize(struct v4l2_frmsizeenum *f, u32 pixel_format)
 		case V4L2_PIX_FMT_MPEG4:
 		case V4L2_PIX_FMT_XVID:
 		case V4L2_PIX_FMT_MPEG2:
+		case V4L2_PIX_FMT_MPEG1:
 		case V4L2_PIX_FMT_H263:
 		case V4L2_PIX_FMT_VC1_ANNEX_G:
 		case V4L2_PIX_FMT_VC1_ANNEX_L:
@@ -721,6 +722,15 @@ static struct vsi_video_fmt vsi_coded_fmt[] = {
 		.num_planes = 1,
 		.comp_planes = 1,
 		.mask = BIT(13),
+	},
+	{
+		.fourcc = V4L2_PIX_FMT_MPEG1,
+		.enc_fmt = V4L2_DAEMON_CODEC_UNKNOW_TYPE,
+		.dec_fmt = V4L2_DAEMON_CODEC_DEC_MPEG2,
+		.flag = (V4L2_FMT_FLAG_DYN_RESOLUTION | V4L2_FMT_FLAG_COMPRESSED),
+		.num_planes = 1,
+		.comp_planes = 1,
+		.mask = BIT(6),
 	},
 };
 
