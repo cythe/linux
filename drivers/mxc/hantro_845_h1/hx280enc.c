@@ -272,7 +272,7 @@ static int CheckEncIrq(hx280enc_t *dev)
 	return rdy;
 }
 
-unsigned int WaitEncReady(hx280enc_t *dev)
+static unsigned int WaitEncReady(hx280enc_t *dev)
 {
 	u32 irq_status, is_write1_clr;
 	int i;
@@ -306,7 +306,7 @@ unsigned int WaitEncReady(hx280enc_t *dev)
 	return 0;
 }
 
-int CheckCoreOccupation(hx280enc_t *dev)
+static int CheckCoreOccupation(hx280enc_t *dev, struct file *filp)
 {
 	int ret = 0;
 	unsigned long flags;
@@ -323,7 +323,7 @@ int CheckCoreOccupation(hx280enc_t *dev)
 	return ret;
 }
 
-int GetWorkableCore(hx280enc_t *dev)
+static int GetWorkableCore(hx280enc_t *dev, struct file *filp)
 {
 	int ret = 0;
 
@@ -335,7 +335,7 @@ int GetWorkableCore(hx280enc_t *dev)
 	return ret;
 }
 
-long ReserveEncoder(hx280enc_t *dev)
+static long ReserveEncoder(hx280enc_t *dev, struct file *filp)
 {
 	/* lock a core that has specified core id*/
 	if (wait_event_interruptible(enc_hw_queue, GetWorkableCore(dev) != 0))
@@ -344,7 +344,7 @@ long ReserveEncoder(hx280enc_t *dev)
 	return 0;
 }
 
-void ReleaseEncoder(hx280enc_t *dev)
+static void ReleaseEncoder(hx280enc_t *dev, struct file *filp)
 {
 	unsigned long flags;
 
