@@ -670,7 +670,8 @@ imx95-15x15-evk-ox03c10-isp-adv7535-dtbs := imx95-15x15-evk-adv7535.dtb \
 					    imx95-19x19-evk-neoisp.dtbo
 dtb-$(CONFIG_ARCH_MXC) += imx95-15x15-evk-ox03c10-isp-adv7535.dtb
 DTC_FLAGS_imx95-15x15-evk-rpmsg := -@
-dtb-$(CONFIG_ARCH_MXC) += imx95-15x15-evk-rpmsg.dtb
+DTC_FLAGS_imx95-15x15-evk-rpmsg-lpv := -@
+dtb-$(CONFIG_ARCH_MXC) += imx95-15x15-evk-rpmsg.dtb imx95-15x15-evk-rpmsg-lpv.dtb
 
 imx95-19x19-evk-pcie1-ep-dtbs := imx95-19x19-evk.dtb imx95-19x19-evk-pcie1-ep.dtbo
 dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-pcie1-ep.dtb
