@@ -266,8 +266,9 @@ static int clk_fracn_gppll_set_rate(struct clk_hw *hw, unsigned long drate,
 
 	/* Enable Powerup */
 	tmp |= POWERUP_MASK;
-	writel_relaxed(tmp, pll->base + PLL_CTRL);
-	readl(pll->base + PLL_CTRL);
+	writel(tmp, pll->base + PLL_CTRL);
+	/* Make sure the write has done in HW reg */
+	readl_relaxed(pll->base + PLL_CTRL);
 
 	/* Wait Lock */
 	ret = clk_fracn_gppll_wait_lock(pll);
@@ -310,6 +311,9 @@ static int clk_fracn_gppll_prepare(struct clk_hw *hw)
 	ret = clk_fracn_gppll_wait_lock(pll);
 	if (ret)
 		return ret;
+
+	/* Make sure the write has done in HW reg */
+	readl_relaxed(pll->base + PLL_CTRL);
 
 	val |= CLKMUX_EN;
 	writel_relaxed(val, pll->base + PLL_CTRL);
