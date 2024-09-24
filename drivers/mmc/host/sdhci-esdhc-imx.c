@@ -364,6 +364,7 @@ static struct esdhc_soc_data usdhc_imx8mq_data = {
 			| ESDHC_FLAG_STATE_LOST_IN_LPMODE
 			| ESDHC_FLAG_BROKEN_AUTO_CMD23
 			| ESDHC_FLAG_BUSFREQ,
+	.quirks = SDHCI_QUIRK_NO_LED,
 };
 
 static struct esdhc_soc_data usdhc_s32v234_data = {
@@ -1852,6 +1853,8 @@ static int sdhci_esdhc_imx_probe(struct platform_device *pdev)
 	imx_data = sdhci_pltfm_priv(pltfm_host);
 
 	imx_data->socdata = device_get_match_data(&pdev->dev);
+
+	host->quirks |= imx_data->socdata->quirks;
 
 	if (imx_data->socdata->flags & ESDHC_FLAG_BUSFREQ)
 		request_bus_freq(BUS_FREQ_HIGH);
