@@ -32,6 +32,7 @@ struct mxc_lcd_platform_data {
 struct mxc_lcdif_data {
 	struct platform_device *pdev;
 	struct mxc_dispdrv_handle *disp_lcdif;
+	struct fb_info *fbi;
 };
 
 #define DISPDRV_LCD	"lcd"
@@ -68,6 +69,8 @@ static int lcdif_init(struct mxc_dispdrv_handle *disp,
 	if (ret < 0)
 		return ret;
 
+	lcdif->fbi = setting->fbi;
+
 	ret = fb_find_mode(&setting->fbi->var, setting->fbi, setting->dft_mode_str,
 				modedb, modedb_sz, NULL, setting->default_bpp);
 	if (!ret) {
@@ -91,7 +94,9 @@ static int lcdif_init(struct mxc_dispdrv_handle *disp,
 
 static void lcdif_deinit(struct mxc_dispdrv_handle *disp)
 {
-	/*TODO*/
+	struct mxc_lcdif_data *lcdif = mxc_dispdrv_getdata(disp);
+
+	fb_destroy_modelist(&lcdif->fbi->modelist);
 }
 
 static struct mxc_dispdrv_driver lcdif_drv = {
