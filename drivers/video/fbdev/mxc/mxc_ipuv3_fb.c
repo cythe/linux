@@ -3087,6 +3087,7 @@ static int mxcfb_option_setup(struct platform_device *pdev, struct fb_info *fbi)
 	char *options, *opt, *fb_mode_str = NULL;
 	char name[] = "mxcfb0";
 	uint32_t fb_pix_fmt = 0;
+	char *tmp;
 
 	name[5] += pdev->id;
 	if (fb_get_options(name, &options)) {
@@ -3097,7 +3098,8 @@ static int mxcfb_option_setup(struct platform_device *pdev, struct fb_info *fbi)
 	if (!options || !*options)
 		return 0;
 
-	while ((opt = strsep(&options, ",")) != NULL) {
+	tmp = options;
+	while ((opt = strsep(&tmp, ",")) != NULL) {
 		if (!*opt)
 			continue;
 
@@ -3167,6 +3169,8 @@ static int mxcfb_option_setup(struct platform_device *pdev, struct fb_info *fbi)
 		} else
 			fb_mode_str = opt;
 	}
+
+	kfree(options);
 
 	if (fb_mode_str)
 		pdata->mode_str = fb_mode_str;
