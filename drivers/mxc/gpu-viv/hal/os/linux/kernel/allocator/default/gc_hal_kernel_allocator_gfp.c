@@ -710,12 +710,12 @@ _GFPFree(IN gckALLOCATOR Allocator, IN OUT PLINUX_MDL Mdl)
         dma_unmap_page(dev,
                        mdlPriv->dma_addr,
                        Mdl->numPages << PAGE_SHIFT,
-                       DMA_FROM_DEVICE);
+                       DMA_BIDIRECTIONAL);
     } else {
         dma_unmap_sg(dev,
                      mdlPriv->sgt.sgl,
                      mdlPriv->sgt.nents,
-                     DMA_FROM_DEVICE);
+                     DMA_BIDIRECTIONAL);
 
 #if gcdUSE_LINUX_SG_TABLE_API
         sg_free_table(&mdlPriv->sgt);
