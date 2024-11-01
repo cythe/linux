@@ -210,5 +210,6 @@
 #define IMX91_CLK_ENET2_REGULAR_GATE		205
 #define IMX91_CLK_ENET1_QOS_TSN_GATE		206
 #define IMX93_CLK_SPDIF_IPG		207
+#define IMX93_CLK_END                   208
 
 #endif
