@@ -29,6 +29,7 @@ config FSL_ENETC
 	select PCS_XPCS
 	select DIMLIB
 	select CRC_ITU_T
+	select FSL_NTMP
 	help
 	  This driver supports NXP ENETC gigabit ethernet controller PCIe
 	  physical function (PF) devices, managing ENETC Ports at a privileged
