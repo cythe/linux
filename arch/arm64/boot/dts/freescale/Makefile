@@ -322,6 +322,9 @@ dtb-${CONFIG_ARCH_MXC} += imx8qm-mek-max9286-dual.dtb
 
 imx8qm-mek-revd-dtbs := imx8qm-mek.dtb imx8qm-mek-revd.dtbo
 imx8qm-mek-revd-rpmsg-dtbs := imx8qm-mek-rpmsg.dtb imx8qm-mek-revd.dtbo
+imx8qm-mek-revd-ov5640-csi0-dtbs := imx8qm-mek-ov5640-csi0.dtb imx8qm-mek-revd.dtbo
+imx8qm-mek-revd-ov5640-csi1-dtbs := imx8qm-mek-ov5640-csi1.dtb imx8qm-mek-revd.dtbo
+imx8qm-mek-revd-ov5640-dual-dtbs := imx8qm-mek-ov5640-dual.dtb imx8qm-mek-revd.dtbo
 imx8qm-mek-revd-enet2-tja1100-dtbs := imx8qm-mek-enet2-tja1100.dtb imx8qm-mek-revd.dtbo
 imx8qm-mek-revd-hdmi-dtbs := imx8qm-mek-hdmi.dtb imx8qm-mek-revd.dtbo
 imx8qm-mek-revd-jdi-wuxga-lvds1-panel-dtbs := imx8qm-mek-jdi-wuxga-lvds1-panel.dtb imx8qm-mek-revd.dtbo
