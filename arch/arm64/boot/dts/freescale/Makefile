@@ -311,6 +311,14 @@ imx8qm-mek-ov5640-csi1-rpmsg-dtbs := imx8qm-mek-rpmsg.dtb imx8qm-mek-ov5640-csi1
 dtb-${CONFIG_ARCH_MXC} += imx8qm-mek-ov5640-csi1-rpmsg.dtb
 imx8qm-mek-ov5640-dual-rpmsg-dtbs := imx8qm-mek-rpmsg.dtb imx8qm-mek-ov5640-csi0.dtbo imx8qm-mek-ov5640-csi1.dtbo
 dtb-${CONFIG_ARCH_MXC} += imx8qm-mek-ov5640-dual-rpmsg.dtb
+imx8qm-mek-hdmi-rx-dtbs := imx8qm-mek-hdmi.dtb imx8qm-mek-hdmi-rx.dtbo
+dtb-${CONFIG_ARCH_MXC} += imx8qm-mek-hdmi-rx.dtb
+imx8qm-mek-max9286-csi0-dtbs := imx8qm-mek.dtb imx8qm-mek-max9286-csi0.dtbo
+dtb-${CONFIG_ARCH_MXC} += imx8qm-mek-max9286-csi0.dtb
+imx8qm-mek-max9286-csi1-dtbs := imx8qm-mek.dtb imx8qm-mek-max9286-csi1.dtbo
+dtb-${CONFIG_ARCH_MXC} += imx8qm-mek-max9286-csi1.dtb
+imx8qm-mek-max9286-dual-dtbs := imx8qm-mek.dtb imx8qm-mek-max9286-csi0.dtbo imx8qm-mek-max9286-csi1.dtbo
+dtb-${CONFIG_ARCH_MXC} += imx8qm-mek-max9286-dual.dtb
 
 imx8qm-mek-revd-dtbs := imx8qm-mek.dtb imx8qm-mek-revd.dtbo
 imx8qm-mek-revd-rpmsg-dtbs := imx8qm-mek-rpmsg.dtb imx8qm-mek-revd.dtbo
@@ -491,6 +499,8 @@ imx8qxp-mek-ov5640-parallel-rpmsg-dtbs := imx8qxp-mek-rpmsg.dtb imx8qxp-mek-ov56
 dtb-${CONFIG_ARCH_MXC} += imx8qxp-mek-ov5640-parallel-rpmsg.dtb
 imx8qxp-mek-ov5640-dual-rpmsg-dtbs := imx8qxp-mek-rpmsg.dtb imx8qxp-mek-ov5640-csi.dtbo imx8qxp-mek-ov5640-parallel.dtbo
 dtb-${CONFIG_ARCH_MXC} += imx8qxp-mek-ov5640-dual-rpmsg.dtb
+imx8qxp-mek-max9286-dtbs := imx8qxp-mek.dtb imx8qxp-mek-max9286.dtbo
+dtb-${CONFIG_ARCH_MXC} += imx8qxp-mek-max9286.dtb
 dtb-$(CONFIG_ARCH_MXC) += imx93-9x9-qsb.dtb \
 			  imx93-9x9-qsb-can1.dtb \
 			  imx93-9x9-qsb-flexspi-m2.dtb \
