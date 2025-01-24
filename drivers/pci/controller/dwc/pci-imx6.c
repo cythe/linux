@@ -1528,8 +1528,8 @@ static int imx_pcie_resume_noirq(struct device *dev)
 		imx_pcie_msi_save_restore(imx_pcie, false);
 	} else {
 		ret = dw_pcie_resume_noirq(imx_pcie->pci);
-		if (ret)
-			return ret;
+		if (imx_pcie->link_is_up == false && ret == -ETIMEDOUT)
+			ret = 0;
 		imx_pcie_msi_save_restore(imx_pcie, false);
 	}
 
