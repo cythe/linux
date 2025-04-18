@@ -23,13 +23,6 @@
 #define ENETC_MAX_MTU		(ENETC_MAC_MAXFRM_SIZE - \
 				(ETH_FCS_LEN + ETH_HLEN + VLAN_HLEN))
 
-/* i.MX95 supports jumbo frame, but it is recommended to set the max frame
- * size to 2000 bytes.
- */
-#define ENETC4_MAC_MAXFRM_SIZE	2000
-#define ENETC4_MAX_MTU		(ENETC4_MAC_MAXFRM_SIZE - \
-				(ETH_FCS_LEN + ETH_HLEN + VLAN_HLEN))
-
 #define ENETC_CBD_DATA_MEM_ALIGN 64
 
 #define ENETC_INT_NAME_MAX	(IFNAMSIZ + 8)
@@ -38,18 +31,21 @@ struct enetc_tx_swbd {
 	union {
 		struct sk_buff *skb;
 		struct xdp_frame *xdp_frame;
+		struct xdp_buff *xsk_buff;
 	};
 	dma_addr_t dma;
 	struct page *page;	/* valid only if is_xdp_tx */
 	u16 page_offset;	/* valid only if is_xdp_tx */
 	u16 len;
 	enum dma_data_direction dir;
+	struct xsk_tx_metadata_compl xsk_meta;
 	u8 is_dma_page:1;
 	u8 check_wb:1;
 	u8 do_twostep_tstamp:1;
 	u8 is_eof:1;
 	u8 is_xdp_tx:1;
 	u8 is_xdp_redirect:1;
+	u8 is_xsk:1;
 	u8 qbv_en:1;
 };
 
@@ -78,6 +74,7 @@ struct enetc_lso_t {
 struct enetc_rx_swbd {
 	dma_addr_t dma;
 	struct page *page;
+	struct xdp_buff *xsk_buff;
 	u16 page_offset;
 	enum dma_data_direction dir;
 	u16 len;
@@ -109,12 +106,29 @@ struct enetc_ring_stats {
 struct enetc_xdp_data {
 	struct xdp_rxq_info rxq;
 	struct bpf_prog *prog;
+	struct xsk_buff_pool *xsk_pool;
+	struct xdp_buff **xsk_batch;
 	int xdp_tx_in_flight;
 };
+
+struct enetc_xsk_cb {
+	int rx_queue;
+	struct xsk_buff_pool *pool;
+};
+
+/* Currently, we only need the TCP and UDP type */
+enum enetc_l4_type {
+	ENETC_L4T_UDP = 0,
+	ENETC_L4T_TCP,
+	ENETC_L4T_OTHER,
+};
+
+#define ENETC_L4_TYPE_NUM		28
 
 #define ENETC_RX_RING_DEFAULT_SIZE	2048
 #define ENETC_TX_RING_DEFAULT_SIZE	2048
 #define ENETC_DEFAULT_TX_WORK		(ENETC_TX_RING_DEFAULT_SIZE / 2)
+#define ENETC_XSK_TX_BUDGET		256
 
 struct enetc_bdr_resource {
 	/* Input arguments saved for teardown */
@@ -169,6 +183,24 @@ struct enetc_bdr {
 	char *tso_headers;
 	dma_addr_t tso_headers_dma;
 } ____cacheline_aligned_in_smp;
+
+struct enetc_xdp_buff {
+	struct xdp_buff xdp;
+	struct enetc_bdr *rx_ring;
+	union enetc_rx_bd *rxbd;
+};
+
+struct enetc_metadata_req {
+	struct enetc_bdr *tx_ring;
+	union enetc_tx_bd *txbd;
+	int *index;
+	bool txbd_update;
+};
+
+struct enetc_xsk_tx_complete {
+	struct enetc_bdr *tx_ring;
+	union enetc_tx_bd *txbd;
+};
 
 static inline void enetc_bdr_idx_inc(struct enetc_bdr *bdr, int *i)
 {
@@ -247,6 +279,7 @@ enum enetc_errata {
 #define ENETC_SI_F_QBU  BIT(2)
 #define ENETC_SI_F_LSO	BIT(3)
 #define ENETC_SI_F_RSC	BIT(4)
+#define ENETC_SI_F_PPM	BIT(5) /* Pseduo MAC */
 
 enum enetc_mac_addr_type {UC, MC, MADDR_TYPE};
 
@@ -510,6 +543,8 @@ struct enetc_ndev_priv {
 
 /* PTP driver exports */
 extern int enetc_phc_index;
+extern const struct xdp_metadata_ops enetc_xdp_metadata_ops;
+extern const struct xsk_tx_metadata_ops enetc_xsk_tx_metadata_ops;
 
 /* SI common */
 u32 enetc_port_mac_rd(struct enetc_si *si, u32 reg);
@@ -539,6 +574,7 @@ void enetc_reset_tc_mqprio(struct net_device *ndev);
 int enetc_setup_bpf(struct net_device *ndev, struct netdev_bpf *bpf);
 int enetc_xdp_xmit(struct net_device *ndev, int num_frames,
 		   struct xdp_frame **frames, u32 flags);
+int enetc_xsk_wakeup(struct net_device *ndev, u32 queue, u32 flags);
 void enetc_change_preemptible_tcs(struct enetc_ndev_priv *priv,
 				  u8 preemptible_tcs);
 void enetc_reset_mac_addr_filter(struct enetc_mac_filter *filter);
